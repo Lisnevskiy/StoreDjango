@@ -1,0 +1,73 @@
+[
+  {
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+      "name": "Сладости",
+      "description": "Самые сладкие сладости"
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+      "name": "Ягоды",
+      "description": "Сочные ягоды"
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 3,
+    "fields": {
+      "name": "Фрукты",
+      "description": "Спелые фрукты"
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 4,
+    "fields": {
+      "name": "Овощи",
+      "description": "Вкусные овощи"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+      "name": "Помидор",
+      "description": "Красный помидор",
+      "image": "",
+      "category": 1,
+      "price": 10,
+      "creation_date": "2023-07-20",
+      "modified_date": "2023-07-20"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+      "name": "Вишня",
+      "description": "Кислая вишня",
+      "image": "",
+      "category": 3,
+      "price": 5,
+      "creation_date": "2023-07-20",
+      "modified_date": "2023-07-20"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+      "name": "Апельсин",
+      "description": "Круглый оранжевый апельсин",
+      "image": "",
+      "category": 2,
+      "price": 15,
+      "creation_date": "2023-07-20",
+      "modified_date": "2023-07-20"
+    }
+  }
+]
