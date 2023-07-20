@@ -15,9 +15,13 @@ class Command(BaseCommand):
             data = json.load(f)
             for item in data:
                 if item['model'] == 'catalog.category':
-                    categories_for_create.append(Category(**item['fields']))
-                # elif item['model'] == 'catalog.product':
-                #     products_for_create.append(Product(**item['fields']))
+                    categories_for_create.append(Category(item['pk'], **item['fields']))
 
-        Category.objects.bulk_create(categories_for_create)
-        # Product.objects.bulk_create(products_for_create)
+            Category.objects.bulk_create(categories_for_create)
+
+            for item in data:
+                if item['model'] == 'catalog.product':
+                    item['fields']['category'] = Category.objects.get(pk=item['fields']['category'])
+                    products_for_create.append(Product(item['pk'], **item['fields']))
+
+            Product.objects.bulk_create(products_for_create)
