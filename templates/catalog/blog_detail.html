@@ -1,0 +1,27 @@
+{% extends 'catalog/base.html' %}
+
+{% load catalog_tags %}
+{% block content %}
+<div class="container">
+    <div class="row text-center">
+        <h1 class="display-4">{{ object }} ({{ object.slug}}) </h1>
+        <a href="{% url 'catalog:blog_update' object.pk %}" class="p-2 btn btn-success">Редактировать блог</a>
+        <a href="{% url 'catalog:blog_delete' object.pk %}" class="btn btn-danger">Удалить блог</a>
+        <div class="fs-4 mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                  <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"></path>
+                  <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
+              </svg>
+              - {{ object.views_count }}
+        </div>
+            <div class="col-4">
+                <img src="{{ object.image|mediapath }}" class="img-fluid" alt="Изображения нет">
+            </div>
+            <div class="col-8">
+                <p class="lead">{{ object.content }}</p>
+                <p class="lead"> Дата создания - {{ object.creation_date }}</p>
+            </div>
+    </div>
+    {% include 'catalog/includes/inc_footer.html' %}
+</div>
+{% endblock %}
