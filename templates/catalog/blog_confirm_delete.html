@@ -1,0 +1,17 @@
+{% extends 'catalog/base.html' %}
+
+{% load catalog_tags %}
+{% block content %}
+<div class="container">
+   <div class="card-body">
+        <form method="post" action="" class="form-floating">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p>Вы подтверждаете, что хотите удалить блог {{ object.title }}?</p>
+            <button type="submit" class="btn btn-danger">Удалить</button>
+            <a href="{% url 'catalog:blogs' %}" class="btn btn-warning">Отмена</a>
+        </form>
+    </div>
+    {% include 'catalog/includes/inc_footer.html' %}
+</div>
+{% endblock %}

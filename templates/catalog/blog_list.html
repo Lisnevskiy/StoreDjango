@@ -1,0 +1,40 @@
+{% extends 'catalog/base.html' %}
+
+{% load catalog_tags %}
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Блоги</h1>
+    <a class="p-2 btn btn-outline-primary" href="/blogs/create">Создать блог</a>
+</div>
+
+<div class="container">
+    <div class="row text-center">
+        {% for object in object_list %}
+            <div class="col-4">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal">{{ object }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            {{ object.views_count }}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"></path>
+                                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
+                            </svg>
+                        </p>
+                        <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                            <li>{{ object.content|truncatechars:100 }}</li>
+                        </ul>
+                        <a href="/blogs/{{ object.pk }}" class="p-2 btn btn-info" >Посмотреть блог</a>
+                        <a href="{% url 'catalog:blog_update' object.pk %}" class="p-2 btn btn-success">Редактировать блог</a>
+                        <a href="{% url 'catalog:blog_delete' object.pk %}" class="btn btn-danger">Удалить блог</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% include 'catalog/includes/inc_footer.html' %}
+</div>
+{% endblock %}
