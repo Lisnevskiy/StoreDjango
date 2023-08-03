@@ -26,10 +26,10 @@ def contacts(request) -> object:
         return render(request, 'catalog/contacts.html', context)
 
 
-def product(request):
-    product = Product.objects.get(name='Вишня')
+def products(request, pk):
+    product_item = Product.objects.get(pk=pk)
     context = {
-        'product': product,
-        'title': 'Продукт'
+        'product': product_item,
+        'title': product_item.name
     }
     return render(request, 'catalog/product.html', context)
