@@ -22,8 +22,8 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/', verbose_name='Изображение', **NULLABLE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     price = models.PositiveIntegerField(verbose_name='Цена')
-    creation_date = models.DateField(verbose_name='Дата создания')
-    modified_date = models.DateField(verbose_name='Дата последнего изменения')
+    creation_date = models.DateField(auto_now_add=True, verbose_name='Дата создания')
+    modified_date = models.DateField(auto_now=True, verbose_name='Дата последнего изменения')
 
     def __str__(self):
         return f'{self.name}'
@@ -31,6 +31,21 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'продукт'
         verbose_name_plural = 'продукты'
+
+
+class Version(models.Model):
+    number = models.PositiveIntegerField(verbose_name='номер версии')
+    title = models.CharField(max_length=150, verbose_name='название')
+    current_version = models.BooleanField(default=False, verbose_name='признак текущей версии')
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='товар')
+
+    def __str__(self):
+        return f'{self.title} №{self.number}'
+
+    class Meta:
+        verbose_name = 'версия'
+        verbose_name_plural = 'версии'
 
 
 class Blog(models.Model):
