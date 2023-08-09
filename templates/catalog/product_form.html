@@ -1,0 +1,51 @@
+{% extends 'catalog/base.html' %}
+
+{% load catalog_tags %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        {% if object %}
+            <h1 class="display-4">Редактирование продукта</h1>
+        {% else %}
+            <h1 class="display-4">Создание продукта</h1>
+        {% endif %}
+    </div>
+    <form method="post" class="form-floating" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body">
+                        {% csrf_token %}
+<!--                        {{ form.as_p }}-->
+                        {{ form|crispy }}
+                        <button type="submit" class="btn btn-success">
+                            {% if object %}
+                                Изменить
+                            {% else %}
+                                Создать
+                            {% endif %}
+                        </button>
+                        <a href="{% url 'catalog:blogs' %}" class="btn btn-warning">Отмена</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        Версии продукта
+                        <div class="card-body">
+                            {{ formset.management_form }}
+                            {% for form in formset.forms %}
+<!--                                {{ form.as_p }}-->
+                                {{ form|crispy }}
+                            {% endfor %}
+                    </div>
+                    </div>
+                </div>
+            </div>
+            {% include 'catalog/includes/inc_footer.html' %}
+        </div>
+    </form>
+{% endblock %}
