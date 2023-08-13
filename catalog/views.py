@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
@@ -21,14 +22,24 @@ class ProductDetailView(DetailView):
         return self.object
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
+    login_url = 'users:login'
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:products')
     extra_context = {'title': 'Добавление товара'}
 
+    def form_valid(self, form):
+        if form.is_valid():
+            self.object = form.save()
+            self.object.owner = self.request.user
+            self.object.save()
 
-class ProductUpdateView(UpdateView):
+        return super().form_valid(form)
+
+
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
+    login_url = 'users:login'
     model = Product
     form_class = ProductForm
     extra_context = {'title': 'Редактирование товара'}
@@ -56,7 +67,8 @@ class ProductUpdateView(UpdateView):
         return reverse('catalog:products', args=[self.kwargs.get('pk')])
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
+    login_url = 'users:login'
     model = Product
     success_url = reverse_lazy('catalog:products')
     extra_context = {'title': 'Удаление товара'}
