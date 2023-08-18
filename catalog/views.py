@@ -1,10 +1,11 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.forms import inlineformset_factory
+from django.http import Http404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from pytils.translit import slugify
 
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ProductForm, VersionForm, ModeratorProductForm
 from catalog.models import Product, Blog, Version
 
 
@@ -23,7 +24,6 @@ class ProductDetailView(DetailView):
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
-    login_url = 'users:login'
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:products')
@@ -39,24 +39,39 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
 
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
-    login_url = 'users:login'
     model = Product
     form_class = ProductForm
     extra_context = {'title': 'Редактирование товара'}
 
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+
+        if self.object.owner != self.request.user and not self.request.user.is_staff:
+            raise Http404
+            # return redirect('users:permission_denied')
+
+        elif self.object.owner != self.request.user and self.request.user.is_staff:
+            self.form_class = ModeratorProductForm
+
+        return self.object
+
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+
         VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+
         if self.request.method == 'POST':
             context_data['formset'] = VersionFormset(self.request.POST, instance=self.object)
+
         else:
             context_data['formset'] = VersionFormset(instance=self.object)
+
         return context_data
 
     def form_valid(self, form):
         formset = self.get_context_data()['formset']
-        print(formset)
         self.object = form.save()
+
         if formset.is_valid():
             formset.instance = self.object
             formset.save()
@@ -67,10 +82,10 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         return reverse('catalog:products', args=[self.kwargs.get('pk')])
 
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
-    login_url = 'users:login'
+class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:products')
+    permission_required = 'catalog.delete_product'
     extra_context = {'title': 'Удаление товара'}
 
 

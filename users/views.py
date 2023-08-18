@@ -1,6 +1,6 @@
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.mail import send_mail
-from django.http import Http404, JsonResponse
+from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView
@@ -90,7 +90,7 @@ def reset_password(request):
         user.save()
 
         message = f'Ваш новы пароль для авторизации {new_password}'
-        # send_mail('New Password', message, settings.DEFAULT_FROM_EMAIL, [email])
+
         send_mail(
             subject='New Password',
             message=message,
@@ -99,6 +99,7 @@ def reset_password(request):
         )
 
         return render(request, 'users/new_password.html', context)
+
     else:
         return render(request, 'users/reset_password.html', context)
 
@@ -109,6 +110,11 @@ def new_password(request):
 
 
 def email_not_found(request):
-    context = {'Не найдено'}
+    context = {'title': 'Не найдено'}
     return render(request, 'users/email_not_found.html', context=context)
+
+
+# def permission_denied(request):
+#     context = {'title': 'В доступе отказано'}
+#     return render(request, 'users/permission_denied.html', context=context)
 
