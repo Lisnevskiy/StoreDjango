@@ -26,6 +26,7 @@ class Product(models.Model):
     price = models.PositiveIntegerField(verbose_name='Цена')
     creation_date = models.DateField(auto_now_add=True, verbose_name='Дата создания')
     modified_date = models.DateField(auto_now=True, verbose_name='Дата последнего изменения')
+    publishing_flag = models.BooleanField(default=False, verbose_name='Признак публикации')
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='владелец', **NULLABLE)
 

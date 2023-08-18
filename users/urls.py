@@ -15,4 +15,5 @@ urlpatterns = [
     path('reg_confirmation/', reg_confirmation, name='reg_confirmation'),
     path('reset_password/', reset_password, name='reset_password'),
     path('new_password/', new_password, name='new_password'),
+    # path('permission_denied/', permission_denied, name='permission_denied'),
 ]
