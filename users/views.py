@@ -1,13 +1,11 @@
 from django.contrib.auth.views import LoginView, LogoutView
-from django.core.mail import send_mail
 from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView
-
-from config import settings
 from users.forms import UserRegForm, UserForm
 from users.models import User
+from users.services import send_verifications_mail, send_new_password_email
 
 
 class UserLoginView(LoginView):
@@ -33,12 +31,7 @@ class UserRegisterView(CreateView):
             reverse('users:verify') + f'?key={self.object.verification_key}'
         )
 
-        send_mail(
-            subject='Подтверждение электронной почты',
-            message=f'Перейдите по ссылке, чтобы подтвердить свой адрес электронной почты: {verification_url}',
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[self.object.email]
-        )
+        send_verifications_mail(self.object.email, verification_url)
 
         return super().form_valid(form)
 
@@ -89,14 +82,7 @@ def reset_password(request):
         user.set_password(new_password)
         user.save()
 
-        message = f'Ваш новы пароль для авторизации {new_password}'
-
-        send_mail(
-            subject='New Password',
-            message=message,
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[email]
-        )
+        send_new_password_email(email, new_password)
 
         return render(request, 'users/new_password.html', context)
 
