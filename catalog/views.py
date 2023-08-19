@@ -6,7 +6,8 @@ from django.views.generic import ListView, DetailView, TemplateView, CreateView,
 from pytils.translit import slugify
 
 from catalog.forms import ProductForm, VersionForm, ModeratorProductForm
-from catalog.models import Product, Blog, Version
+from catalog.models import Product, Blog, Version, Category
+from catalog.services import get_category_cache
 
 
 class ProductListView(ListView):
@@ -87,6 +88,16 @@ class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView)
     success_url = reverse_lazy('catalog:products')
     permission_required = 'catalog.delete_product'
     extra_context = {'title': 'Удаление товара'}
+
+
+class CategoryListView(ListView):
+    model = Category
+    extra_context = {'title': 'Категории'}
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['category'] = get_category_cache()
+        return context_data
 
 
 class ContactsTemplateView(TemplateView):
